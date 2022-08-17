@@ -395,6 +395,46 @@ class TradeData(KucoinFuturesBaseRestApi):
 
         return self._request('POST', '/api/v1/orders', params=params)
 
+    def create_limit_order_with_stop_loss(self, symbol, side, lever, size, price, stop, clientOid='', **kwargs):
+        """
+        Place Limit Order Functions with Stop Loss
+
+        https://docs.kumex.com/#place-an-order
+        :param symbol: interest symbol (Mandatory)
+        :type: str
+        :param side: place direction buy or sell (Mandatory)
+        :type: str
+        :param lever: Leverage of the order (Mandatory)
+        :type: str
+        :param size: Order size. Must be a positive number (Mandatory)
+        :type: str
+        :param price: Limit price (Mandatory)
+        :type: str
+        :param stop: Stop price (Mandatory)
+        :type: str
+        :param clientOid: Unique order id created by users to identify their orders, e.g. UUID, Only allows numbers,
+         characters, underline(_), and separator(-) (Mandatory)
+        :type: str
+        :param kwargs:  Fill in parameters with reference documents
+        :return: {'orderId': '5d9ee461f24b80689797fd04'}
+        """
+        params = {
+            'symbol': symbol,
+            'size': size,
+            'side': side,
+            'price': price,
+            'stop': stop,
+            'leverage': lever,
+            'type': 'limit'
+        }
+        if not clientOid:
+            clientOid = self.return_unique_id
+        params['clientOid'] = clientOid
+        if kwargs:
+            params.update(kwargs)
+
+        return self._request('POST', '/api/v1/orders', params=params)
+
     def cancel_order(self, orderId):
         """
         https://docs.kumex.com/#cancel-an-order
